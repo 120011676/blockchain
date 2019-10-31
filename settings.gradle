@@ -8,3 +8,5 @@
  */
 
 rootProject.name = 'vine-blockchain-helper'
+include 'vine-blockchain'
+
