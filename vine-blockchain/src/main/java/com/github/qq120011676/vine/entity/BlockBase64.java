@@ -14,13 +14,14 @@ import java.text.MessageFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 @Data
 @NoArgsConstructor
-public class Block implements Serializable {
+public class BlockBase64 implements Serializable {
     private Map<String, String> headers = new HashMap<>();
     private String content;
     private static final String PREVIOUS_SIGN = "Previous-Sign";
@@ -33,7 +34,7 @@ public class Block implements Serializable {
     private static final String HEADER_SEPARATOR = ": ";
     private static final Charset ENCODING = StandardCharsets.UTF_8;
 
-    public Block(String content, String previousSign) {
+    public BlockBase64(String content, String previousSign) {
         this.content = content;
         headers.put(PREVIOUS_SIGN, previousSign);
         headers.put(DATE, ZonedDateTime.now().format(DATE_TIME_FORMATTER));
@@ -114,8 +115,9 @@ public class Block implements Serializable {
         FileUtils.writeStringToFile(new File(pathname), this.toJson(), ENCODING);
     }
 
-    public static Block parseString(String s) throws IOException {
-        Block block = new Block();
+    public static BlockBase64 parseString(String s) throws IOException {
+        StringBufferInputStream stringBufferInputStream = new StringBufferInputStream(s);
+        BlockBase64 block = new BlockBase64();
         String[] lines = s.split("\\r?\\n");
         boolean header = true;
         for (String line : lines) {
@@ -133,31 +135,44 @@ public class Block implements Serializable {
         return block;
     }
 
-    public static Block parse(String pathname) throws IOException {
+    public static BlockBase64 parse(String pathname) throws IOException {
         return parse(new File(pathname));
     }
 
-    public static Block parse(File file) throws IOException {
+    public static BlockBase64 parse(File file) throws IOException {
         return parse(new FileInputStream(file));
     }
 
-    public static Block parse(InputStream inputStream) throws IOException {
-        return parse(IOUtils.toString(inputStream, ENCODING));
+    public static BlockBase64 parse(InputStream inputStream) throws IOException {
+        List<String> lines = IOUtils.readLines(inputStream, ENCODING);
+        BlockBase64 block = new BlockBase64();
+        boolean header = true;
+        for (String line : lines) {
+            if (header && Pattern.matches("^\\s*$", line)) {
+                header = false;
+            } else if (header) {
+                String[] nv = line.split(HEADER_SEPARATOR);
+                block.header(nv[0], nv[1]);
+            } else {
+                block.setContent(line);
+            }
+        }
+        return block;
     }
 
-    public static Block parseJsonString(String json) {
-        return new Gson().fromJson(json, Block.class);
+    public static BlockBase64 parseJsonString(String json) {
+        return new Gson().fromJson(json, BlockBase64.class);
     }
 
-    public static Block parseJson(String pathname) throws IOException {
+    public static BlockBase64 parseJson(String pathname) throws IOException {
         return parseJson(new File(pathname));
     }
 
-    public static Block parseJson(File file) throws IOException {
+    public static BlockBase64 parseJson(File file) throws IOException {
         return parseJson(new FileInputStream(file));
     }
 
-    public static Block parseJson(InputStream inputStream) throws IOException {
+    public static BlockBase64 parseJson(InputStream inputStream) throws IOException {
         return parseJsonString(IOUtils.toString(inputStream, ENCODING));
     }
 }
