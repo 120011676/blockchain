@@ -75,7 +75,7 @@ public class Block implements Serializable {
     }
 
     public String getEncodeType() {
-        return this.headers.get(SIGN);
+        return this.headers.get(ENCODE_TYPE);
     }
 
     public void setEncodeType(String encodeType) {
@@ -142,7 +142,7 @@ public class Block implements Serializable {
     }
 
     public static Block parse(InputStream inputStream) throws IOException {
-        return parse(IOUtils.toString(inputStream, ENCODING));
+        return parseString(IOUtils.toString(inputStream, ENCODING));
     }
 
     public static Block parseJsonString(String json) {

@@ -12,12 +12,17 @@ class VineTest {
         String blockFileName = "/tmp/test.block";
         String jsonFileName = "/tmp/test.json";
 
-        Block block = new Block("中文", "11");
+        Block block = new Block("中文中文", "11");
 
         Vine.writer(block, blockFileName);
         Vine.writerJson(block, jsonFileName);
 
-        Assertions.assertNotNull(Vine.reader(blockFileName));
-        Assertions.assertNotNull(Vine.readerJson(jsonFileName));
+        Block blockRead = Vine.reader(blockFileName);
+        System.out.println(blockRead);
+        Assertions.assertNotNull(blockRead);
+
+        Block blockReadJson = Vine.readerJson(jsonFileName);
+        System.out.println(blockReadJson);
+        Assertions.assertNotNull(blockReadJson);
     }
 }
