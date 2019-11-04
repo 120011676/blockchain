@@ -5,23 +5,96 @@
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds
  */
 
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 description = 'blockchain helper'
 
-allprojects {
-    group = 'com.github.120011676'
-    version = '0.0.1'
+group = 'com.github.120011676'
+version = '0.0.1'
 
-    repositories {
-        mavenCentral()
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.github.120011676:chunk:latest.release'
+    implementation 'commons-codec:commons-codec:latest.release'
+    implementation 'commons-io:commons-io:latest.release'
+    implementation 'com.google.code.gson:gson:latest.release'
+    compileOnly 'org.projectlombok:lombok:latest.release'
+    annotationProcessor 'org.projectlombok:lombok:latest.release'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:latest.release'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:latest.release'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'vine'
+                description = 'blockchain helper.'
+                url = 'https://github.com/120011676/vine'
+                licenses {
+                    license {
+                        name = 'The MIT License (MIT)'
+                        url = 'https://mit-license.org'
+                    }
+                }
+                developers {
+                    developer {
+                        id = '120011676'
+                        name = 'Say.li'
+                        email = '120011676@qq.com'
+                    }
+                }
+                scm {
+                    connection = 'git@github.com:120011676/vine.git'
+                    developerConnection = 'git@github.com:120011676/vine.git'
+                    url = 'https://github.com/120011676/vine'
+                }
+            }
+        }
     }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username = maven_username
+                password = maven_password
+            }
+        }
     }
 }
 
-subprojects {
-    apply plugin: 'java-library'
-
-    sourceCompatibility = 1.8
+signing {
+    sign publishing.publications.mavenJava
 }
