@@ -2,6 +2,7 @@ package com.github.qq120011676.vine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.ZonedDateTime;
 import java.util.Map;
 
@@ -58,16 +59,28 @@ public class BlockCode {
         return this.block.toJson();
     }
 
-    public boolean verify(String sign) {
-        return this.block.verify(sign);
+    public String generateSign() {
+        return this.block.generateSign();
+    }
+
+    public boolean verify() {
+        return this.block.verify();
     }
 
     public void writer(String pathname) throws IOException {
         this.block.writer(pathname);
     }
 
+    public void writer(OutputStream outputStream) throws IOException {
+        this.block.writer(outputStream);
+    }
+
     public void writerJson(String pathname) throws IOException {
         this.block.writerJson(pathname);
+    }
+
+    public void writerJson(OutputStream outputStream) throws IOException {
+        this.block.writerJson(outputStream);
     }
 
     public static BlockCode reader(String pathname) throws IOException {
