@@ -58,6 +58,10 @@ public class BlockCode {
         return this.block.toJson();
     }
 
+    public boolean verify(String sign) {
+        return this.block.verify(sign);
+    }
+
     public void writer(String pathname) throws IOException {
         this.block.writer(pathname);
     }

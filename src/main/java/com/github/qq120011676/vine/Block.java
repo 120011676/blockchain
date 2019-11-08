@@ -66,6 +66,10 @@ public class Block {
         return this.chunk.toJson();
     }
 
+    public boolean verify(String sign) {
+        return sign.equals(DigestUtils.sha3_512Hex(this.content()));
+    }
+
     public void writer(String pathname) throws IOException {
         this.chunk.writer(pathname);
     }
