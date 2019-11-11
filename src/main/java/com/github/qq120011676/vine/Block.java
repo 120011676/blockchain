@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class Block {
     private Chunk chunk = new Chunk();
@@ -21,9 +20,24 @@ public class Block {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
     public Block(String content, String previousSign) {
+        this(content, previousSign, null);
+    }
+
+    public Block(String content, String previousSign, Map<String, String> headers) {
         this.chunk.setContent(content);
         this.chunk.header(PREVIOUS_SIGN_NAME, previousSign);
         this.chunk.header(DATE_NAME, ZonedDateTime.now().format(DATE_TIME_FORMATTER));
+        if (headers != null && headers.size() > 0) {
+            headers.keySet().forEach(name -> chunk.header(name, headers.get(name)));
+        }
+        this.chunk.header(SIGN_TYPE_NAME, "SHA3-512_HEX");
+        StringBuilder signData = new StringBuilder();
+        this.chunk.getHeaders().keySet().stream().sorted().forEach(name -> {
+            signData.append(name);
+            signData.append(chunk.header(name));
+        });
+        signData.append(this.chunk.getContent());
+        this.chunk.header(SIGN_NAME, DigestUtils.sha3_512Hex(signData.toString()));
     }
 
     protected Block(Chunk chunk) {
@@ -71,31 +85,11 @@ public class Block {
         return this.chunk.toJson();
     }
 
-    public String generateSign() {
-        StringBuilder signData = new StringBuilder();
-        this.chunk.getHeaders().keySet().stream().sorted().forEach(new Consumer<String>() {
-            @Override
-            public void accept(String name) {
-                signData.append(name);
-                signData.append(chunk.header(name));
-            }
-        });
-        signData.append(this.chunk.getContent());
-        String sign = DigestUtils.sha3_512Hex(signData.toString());
-        this.chunk.header(SIGN_TYPE_NAME, sign);
-        this.chunk.header(SIGN_TYPE_NAME, "SHA3-512_HEX");
-        return sign;
-    }
-
     public boolean verify() {
         StringBuilder signData = new StringBuilder();
-        this.chunk.getHeaders().keySet().stream().sorted().forEach(new Consumer<String>() {
-            @Override
-            public void accept(String name) {
-                if (!SIGN_NAME.equals(name)) {
-                    signData.append(name);
-                    signData.append(chunk.header(name));
-                }
+        this.chunk.getHeaders().keySet().stream().sorted().forEach(name -> {
+            if (!SIGN_NAME.equals(name)) {
+                signData.append(name).append(chunk.header(name));
             }
         });
         signData.append(this.chunk.getContent());

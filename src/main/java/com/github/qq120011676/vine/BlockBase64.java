@@ -12,7 +12,7 @@ public class BlockBase64 {
     private static final String ENCODE_TYPE = "Base64";
 
     public BlockBase64(byte[] content, String previousSign) {
-        blockCode = new BlockCode(Base64.getEncoder().encodeToString(content), ENCODE_TYPE, previousSign);
+        this.blockCode = new BlockCode(Base64.getEncoder().encodeToString(content), ENCODE_TYPE, previousSign);
     }
 
     protected BlockBase64(BlockCode blockCode) {
@@ -57,10 +57,6 @@ public class BlockBase64 {
 
     public String toJson() {
         return this.blockCode.toJson();
-    }
-
-    public String generateSign() {
-        return this.blockCode.generateSign();
     }
 
     public boolean verify() {

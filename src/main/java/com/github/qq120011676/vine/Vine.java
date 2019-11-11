@@ -19,19 +19,19 @@ public class Vine {
 
     public static class BlockHelper {
 
-        public void writer(Block block, String pathname) throws IOException {
+        public static void writer(Block block, String pathname) throws IOException {
             block.writer(pathname);
         }
 
-        public void writer(Block block, OutputStream outputStream) throws IOException {
+        public static void writer(Block block, OutputStream outputStream) throws IOException {
             block.writer(outputStream);
         }
 
-        public void writerJson(Block block, String pathname) throws IOException {
+        public static void writerJson(Block block, String pathname) throws IOException {
             block.writerJson(pathname);
         }
 
-        public void writerJson(Block block, OutputStream outputStream) throws IOException {
+        public static void writerJson(Block block, OutputStream outputStream) throws IOException {
             block.writerJson(outputStream);
         }
 
@@ -70,19 +70,19 @@ public class Vine {
 
     public static class BlockCodeHelper {
 
-        public void writer(BlockCode blockCode, String pathname) throws IOException {
+        public static void writer(BlockCode blockCode, String pathname) throws IOException {
             blockCode.writer(pathname);
         }
 
-        public void writer(BlockCode blockCode, OutputStream outputStream) throws IOException {
+        public static void writer(BlockCode blockCode, OutputStream outputStream) throws IOException {
             blockCode.writer(outputStream);
         }
 
-        public void writerJson(BlockCode blockCode, String pathname) throws IOException {
+        public static void writerJson(BlockCode blockCode, String pathname) throws IOException {
             blockCode.writerJson(pathname);
         }
 
-        public void writerJson(BlockCode blockCode, OutputStream outputStream) throws IOException {
+        public static void writerJson(BlockCode blockCode, OutputStream outputStream) throws IOException {
             blockCode.writerJson(outputStream);
         }
 
@@ -121,19 +121,19 @@ public class Vine {
 
     public static class BlockBase64Helper {
 
-        public void writer(BlockBase64 blockBase64, String pathname) throws IOException {
+        public static void writer(BlockBase64 blockBase64, String pathname) throws IOException {
             blockBase64.writer(pathname);
         }
 
-        public void writer(BlockBase64 blockBase64, OutputStream outputStream) throws IOException {
+        public static void writer(BlockBase64 blockBase64, OutputStream outputStream) throws IOException {
             blockBase64.writer(outputStream);
         }
 
-        public void writerJson(BlockBase64 blockBase64, String pathname) throws IOException {
+        public static void writerJson(BlockBase64 blockBase64, String pathname) throws IOException {
             blockBase64.writerJson(pathname);
         }
 
-        public void writerJson(BlockBase64 blockBase64, OutputStream outputStream) throws IOException {
+        public static void writerJson(BlockBase64 blockBase64, OutputStream outputStream) throws IOException {
             blockBase64.writerJson(outputStream);
         }
 

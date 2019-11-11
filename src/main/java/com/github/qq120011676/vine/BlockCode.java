@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 public class BlockCode {
@@ -11,8 +12,9 @@ public class BlockCode {
     private static final String ENCODE_TYPE_NAME = "Encode-type";
 
     public BlockCode(String content, String encodeType, String previousSign) {
-        block = new Block(content, previousSign);
-        this.block.header(ENCODE_TYPE_NAME, encodeType);
+        Map<String, String> headers = new HashMap<>();
+        headers.put(ENCODE_TYPE_NAME, encodeType);
+        this.block = new Block(content, previousSign, headers);
     }
 
     protected BlockCode(Block block) {
@@ -57,10 +59,6 @@ public class BlockCode {
 
     public String toJson() {
         return this.block.toJson();
-    }
-
-    public String generateSign() {
-        return this.block.generateSign();
     }
 
     public boolean verify() {
